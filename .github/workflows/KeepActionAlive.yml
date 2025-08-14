@@ -3,29 +3,21 @@ name: 'KeepActionAlive'
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 1 * *'
+    - cron: '0 0 * * 0'  # 每周日触发
 
 jobs:
   auto_renew:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout codes'
-        uses: actions/checkout@v2
-      
-      - name: 'Avoid Github Workflow being suspended'
-        run: echo $(cat /proc/sys/kernel/random/uuid) > UUID.txt
-      
-      - name: 'Commit Files'
-        id: commit
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Empty Commit
         run: |
-         git config --global user.email "sakuya@sakuya.ga"
-         git config --global user.name "guihongwong"
-         git config --global user.password $passwd
-         git add .
-         git diff --quiet && git diff --staged --quiet || git commit -am '1'
-         echo ::set-output name=status::success
-           
-      - name: 'GitHub Push'
-        run: |
-         git branch -M main
-         git push -u origin main
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git commit --allow-empty -m "🤖 Automated weekly activity ping"
+
+      - name: Push Changes
+        run: git push origin HEAD
