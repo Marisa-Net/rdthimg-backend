@@ -18,15 +18,14 @@ jobs:
       - name: 'Commit Files'
         id: commit
         run: |
-          git config --local user.email "marisa@marisa.ml"
-          git config --local user.name "GuihongWang"
+         git config --global user.email "sakuya@sakuya.ga"
+         git config --global user.name "guihongwong"
+         git config --global user.password $passwd
           git add .
           git diff --quiet && git diff --staged --quiet || git commit -am '1'
           echo ::set-output name=status::success
            
       - name: 'GitHub Push'
-        if: steps.commit.output.status != 'success'
-        uses: ad-m/github-push-action@v0.8.0
-        with:
-          github_token: ${{ secrets.GH_TK }}
-          branch: ${{ github.ref }}
+        run: |
+         git branch -M main
+         git push -u origin main
