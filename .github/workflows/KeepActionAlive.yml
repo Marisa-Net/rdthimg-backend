@@ -28,5 +28,5 @@ jobs:
         if: steps.commit.output.status != 'success'
         uses: ad-m/github-push-action@v0.8.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_TK }}
           branch: ${{ github.ref }}
